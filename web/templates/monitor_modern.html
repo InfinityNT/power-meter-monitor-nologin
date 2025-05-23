@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Energía</title>
+    <link rel="stylesheet" href="monitor_modern.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="sidebar">
+            <div class="logo">
+                <h2>FUSION SMART</h2>
+                <span class="beta">BETA</span>
+            </div>
+            <nav>
+                <a href="#" class="nav-item active" data-section="dashboard">
+                    <span class="icon">📊</span> Panel
+                </a>
+                <a href="#" class="nav-item" data-section="cost">
+                    <span class="icon">💰</span> Costo
+                </a>
+                <a href="#" class="nav-item" data-section="appliances">
+                    <span class="icon">🔌</span> Aparatos
+                </a>
+                <a href="#" class="nav-item" data-section="usage">
+                    <span class="icon">📈</span> Uso por habitaciones
+                </a>
+                <a href="#" class="nav-item" data-section="emissions">
+                    <span class="icon">🌍</span> Emisiones
+                </a>
+            </nav>
+        </div>
+        
+        <div class="main-content">
+            <div class="header">
+                <h1>Panel de Energía</h1>
+                <div class="date-display" id="currentDate">Junio 2024</div>
+                <div class="time-filters">
+                    <button class="filter-btn" data-filter="today">HOY</button>
+                    <button class="filter-btn active" data-filter="month">MES</button>
+                    <button class="filter-btn" data-filter="year">AÑO</button>
+                </div>
+            </div>
+            
+            <div class="metrics-grid">
+                <!-- Costo Predicho -->
+                <div class="metric-card">
+                    <h3>COSTO PREDICHO</h3>
+                    <div class="chart-container">
+                        <canvas id="costChart"></canvas>
+                        <div class="chart-center-text">
+                            <div class="total-label">Total</div>
+                            <div class="total-value" id="totalCost">$214</div>
+                        </div>
+                    </div>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <span class="legend-color" style="background: #00e4b5"></span>
+                            <span>Electricidad</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background: #ffd93d"></span>
+                            <span>Gas</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cambio en Costo -->
+                <div class="metric-card">
+                    <h3>CAMBIO EN COSTO</h3>
+                    <div class="cost-change">
+                        <canvas id="costChangeChart"></canvas>
+                        <div class="change-indicator">
+                            <span class="arrow">▲</span>
+                            <span class="percentage" id="costChangePercent">5.42%</span>
+                            <div class="change-label">AUMENTO EN COSTO</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Estimación de Uso -->
+                <div class="metric-card">
+                    <h3>ESTIMACIÓN DE USO</h3>
+                    <div class="usage-info">
+                        <div class="usage-values">
+                            <span>Hasta Ahora: <strong id="usageNow">164.1 kWh</strong></span>
+                            <span>Predicho: <strong id="usagePredicted">439 kWh</strong></span>
+                        </div>
+                        <canvas id="usageChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Aparatos Activos -->
+                <div class="metric-card">
+                    <h3>APARATOS ACTIVOS</h3>
+                    <div class="appliances-list">
+                        <div class="appliance-item">
+                            <span class="appliance-name">Calefacción y AC</span>
+                            <div class="appliance-bar" style="width: 80%"></div>
+                            <span class="appliance-value">1.4 kWh</span>
+                        </div>
+                        <div class="appliance-item">
+                            <span class="appliance-name">Carga de VE</span>
+                            <div class="appliance-bar" style="width: 50%"></div>
+                            <span class="appliance-value">0.9 kWh</span>
+                        </div>
+                        <div class="appliance-item">
+                            <span class="appliance-name">Cargas Enchufables</span>
+                            <div class="appliance-bar" style="width: 45%"></div>
+                            <span class="appliance-value">0.8 kWh</span>
+                        </div>
+                        <div class="appliance-item">
+                            <span class="appliance-name">Refrigeración</span>
+                            <div class="appliance-bar" style="width: 40%"></div>
+                            <span class="appliance-value">0.7 kWh</span>
+                        </div>
+                        <div class="appliance-item">
+                            <span class="appliance-name">Iluminación</span>
+                            <div class="appliance-bar" style="width: 30%"></div>
+                            <span class="appliance-value">0.4 kWh</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Intensidad Energética -->
+                <div class="metric-card">
+                    <h3>INTENSIDAD ENERGÉTICA</h3>
+                    <div class="chart-container">
+                        <canvas id="intensityChart"></canvas>
+                        <div class="chart-center-text">
+                            <div class="intensity-value">47</div>
+                            <div class="intensity-unit">kWh/m²</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Huella de Carbono -->
+                <div class="metric-card">
+                    <h3>HUELLA DE CARBONO</h3>
+                    <div class="carbon-info">
+                        <div class="emission-data">
+                            <h4>Emisión</h4>
+                            <div class="emission-values">
+                                <div>
+                                    <span class="label">Hasta la Fecha</span>
+                                    <span class="value">36.4 Kg de CO2</span>
+                                </div>
+                                <div>
+                                    <span class="label">Predicho</span>
+                                    <span class="value">181.8 Kg de CO2</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="green-energy">
+                            <h4>Energía Verde Generada</h4>
+                            <div class="green-bar">
+                                <div class="green-progress" style="width: 60%"></div>
+                            </div>
+                            <span class="goal-text">Meta</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="status-bar">
+                <span id="connectionStatus">Conectado</span>
+                <button id="refreshBtn" class="refresh-btn">↻ Actualizar</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="monitor_modern.js"></script>
+</body>
+</html>

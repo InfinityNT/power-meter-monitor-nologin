@@ -4,6 +4,7 @@ Data manager for collecting and storing power meter data
 import time
 import threading
 import logging
+from .database_handler import DatabaseHandler
 
 logger = logging.getLogger('powermeter.core.data_manager')
 
@@ -23,6 +24,7 @@ class PowerMeterDataManager:
         self.meter_data = {}
         self.running = False
         self._thread = None
+        self.db_handler = DatabaseHandler()
     
     def get_data(self):
         """
@@ -47,6 +49,11 @@ class PowerMeterDataManager:
                     
                 if data is not None:
                     self.meter_data = data
+                    
+                    # Store in database if enabled
+                    if self.db_handler.enabled:
+                        self.db_handler.store_reading(data)
+                    
                     # Log a summary of the data
                     power = data.get('system', {}).get('power_kw', data.get('power_kw', 'N/A'))
                     logger.info(f"Updated readings: Power={power}kW")
@@ -74,4 +81,9 @@ class PowerMeterDataManager:
         if self._thread is not None:
             self._thread.join(timeout=10)
             self._thread = None
+        
+        # Close database connection
+        if self.db_handler:
+            self.db_handler.close()
+            
         logger.info("Data manager stopped")

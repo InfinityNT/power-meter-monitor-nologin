@@ -10,6 +10,7 @@ from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 
 from modbus.protocol import parse_response
+from config.settings import CONFIG
 
 logger = logging.getLogger('powermeter.api.endpoints')
 
@@ -21,7 +22,20 @@ class PowerMeterHTTPHandler(BaseHTTPRequestHandler):
     
     def do_GET(self):
         """Handle GET requests"""
-        if self.path == '/api/power':
+        if self.path == '/api/config':
+            # Serve configuration data to JavaScript
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            
+            config_data = {
+                'API_BASE_URL': CONFIG.get('API_BASE_URL', 'http://localhost:8080/api'),
+                'DASHBOARD_STYLE': CONFIG.get('DASHBOARD_STYLE', 'classic')
+            }
+            self.wfile.write(json.dumps(config_data).encode('utf-8'))
+            
+        elif self.path == '/api/power':
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.send_header('Access-Control-Allow-Origin', '*')  # Enable CORS for testing
@@ -30,6 +44,20 @@ class PowerMeterHTTPHandler(BaseHTTPRequestHandler):
             # Get the latest data from the data manager
             data = self.data_manager.get_data() if self.data_manager else {}
             self.wfile.write(json.dumps(data).encode('utf-8'))
+            
+        elif self.path == '/api/recent_readings':
+            # Get recent readings from database
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            
+            if self.data_manager and hasattr(self.data_manager, 'db_handler'):
+                readings = self.data_manager.db_handler.get_recent_readings(50)
+                self.wfile.write(json.dumps(readings).encode('utf-8'))
+            else:
+                self.wfile.write(json.dumps([]).encode('utf-8'))
+                
         elif self.path.startswith('/api/register/'):
             # Extract register number from path
             try:
@@ -60,10 +88,17 @@ class PowerMeterHTTPHandler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             
-            # Serve HTML template
+            # Serve HTML template based on dashboard style
+            dashboard_style = CONFIG.get('DASHBOARD_STYLE', 'classic')
+            
+            if dashboard_style == 'modern':
+                template_name = 'monitor_modern.html'
+            else:
+                template_name = 'monitor.html'  # Classic Spanish version
+                
             template_path = os.path.join(
                 os.path.dirname(os.path.dirname(__file__)),
-                'web', 'templates', 'index.html'
+                'web', 'templates', template_name
             )
             
             try:

@@ -9,28 +9,50 @@ project_root = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, project_root)
 
 from config import CONFIG
-from core import PowerMeterDataManager, PowerMeterSimulator  # Changed from 'tests'
-from web import start_static_server as start_test_server  # Changed from 'tests'
-from api import  PowerMeterHTTPServer
+from core import PowerMeterDataManager, PowerMeterSimulator
+from core.database_handler import DatabaseHandler
+from web import start_static_server as start_test_server
+from api import PowerMeterHTTPServer
 
 logger = logging.getLogger('powermeter.test')
 
 def main():
     logger.info("Starting power meter test application with simulator")
+    logger.info(f"Dashboard style: {CONFIG.get('DASHBOARD_STYLE', 'classic')}")
     
     # Create simulated reader instead of real hardware
     reader = PowerMeterSimulator()
     
     # Create custom data manager that maintains the simulator's interface
     class CustomPowerMeterDataManager(PowerMeterDataManager):
+        def __init__(self, reader, poll_interval=5):
+            """Initialize with database support"""
+            self.reader = reader
+            self.poll_interval = poll_interval
+            self.meter_data = {}
+            self.running = False
+            self._thread = None
+            self.db_handler = DatabaseHandler()
+            
         def _read_meter_loop(self):
             """Continuously read from the meter"""
             while self.running:
                 try:
-                    data = self.reader.read_data()
+                    # Use detailed data if configured
+                    if CONFIG.get('DETAILED_DATA', False):
+                        data = self.reader.read_detailed_data()
+                    else:
+                        data = self.reader.read_basic_data()
+                        
                     if data is not None:
                         self.meter_data = data
-                        logger.info(f"Updated readings: Power={data.get('system', {}).get('power_kw', 'N/A')}kW")
+                        
+                        # Store in database if enabled
+                        if self.db_handler.enabled:
+                            self.db_handler.store_reading(data)
+                        
+                        power = data.get('system', {}).get('power_kw', data.get('power_kw', 'N/A'))
+                        logger.info(f"Updated readings: Power={power}kW")
                 except Exception as e:
                     logger.error(f"Error in meter reading loop: {str(e)}")
                 time.sleep(self.poll_interval)
@@ -44,13 +66,20 @@ def main():
     try:
         # Start test HTML page server
         start_test_server(8000)
-        logger.info("Test page available at http://localhost:8000/monitor.html")
+        dashboard_type = "modern" if CONFIG.get('DASHBOARD_STYLE') == 'modern' else "classic"
+        logger.info(f"Test page ({dashboard_type} style) available at http://localhost:8000/")
         
         # Start components
         data_manager.start()
         http_server.start()
         
         logger.info(f"Test system running. HTTP API available at http://localhost:{CONFIG['HTTP_PORT']}/")
+        
+        if CONFIG.get('USE_DATABASE', False):
+            logger.info("Database storage is ENABLED")
+        else:
+            logger.info("Database storage is DISABLED")
+            
         logger.info("Press Ctrl+C to exit.")
         
         # Keep main thread alive until keyboard interrupt

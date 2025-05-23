@@ -1,6 +1,11 @@
-const API_BASE_URL = `${window.location.protocol}//${window.location.hostname}:8080/api`;
+// Global API URL variable
+let API_BASE_URL = 'http://10.10.133.15:8080/api';
+
 // Initialize the page
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    // Load configuration first
+    await loadConfiguration();
+    
     // Set up tab navigation
     setupTabs();
     
@@ -21,6 +26,19 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('buildModbusCommandBtn').addEventListener('click', buildModbusCommand);
     document.getElementById('sendModbusCommandBtn').addEventListener('click', sendModbusCommand);
 });
+
+// Load configuration from server
+async function loadConfiguration() {
+    try {
+        const response = await fetch('/api/config');
+        if (response.ok) {
+            const config = await response.json();
+            API_BASE_URL = config.API_BASE_URL || API_BASE_URL;
+        }
+    } catch (error) {
+        console.error('Error cargando configuración:', error);
+    }
+}
 
 // Set up tab navigation
 function setupTabs() {
@@ -43,11 +61,11 @@ function setupTabs() {
 
 // Fetch power meter readings from the API
 function fetchReadings() {
-    document.getElementById('status').textContent = 'Connecting...';
+    document.getElementById('status').textContent = 'Conectando...';
     fetch(`${API_BASE_URL}/power`)
         .then(response => {
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error('La respuesta de red no fue correcta');
             }
             return response.json();
         })
@@ -59,12 +77,12 @@ function fetchReadings() {
             document.getElementById('rawDataContent').textContent = 
                 JSON.stringify(data, null, 2);
             
-            const simMsg = data.simulated ? ' (Simulated Data)' : '';
-            document.getElementById('status').textContent = 'Connected' + simMsg;
+            const simMsg = data.simulated ? ' (Datos Simulados)' : '';
+            document.getElementById('status').textContent = 'Conectado' + simMsg;
         })
         .catch(error => {
-            console.error('Error fetching data:', error);
-            document.getElementById('status').textContent = 'Error connecting to API';
+            console.error('Error obteniendo datos:', error);
+            document.getElementById('status').textContent = 'Error conectando a la API';
         });
 }
 
@@ -123,7 +141,7 @@ function updateUIWithData(data) {
     
     // Update timestamp
     const date = new Date(data.timestamp * 1000);
-    document.getElementById('timestamp').textContent = date.toLocaleString();
+    document.getElementById('timestamp').textContent = date.toLocaleString('es-ES');
 }
 
 // Format a value to 2 decimal places or show '--' if undefined
@@ -153,18 +171,18 @@ function readRegister() {
     const registerNum = document.getElementById('registerInput').value;
     
     if (!registerNum || isNaN(parseInt(registerNum))) {
-        alert('Please enter a valid register number');
+        alert('Por favor ingrese un número de registro válido');
         return;
     }
     
-    document.getElementById('registerNumber').textContent = 'Loading...';
-    document.getElementById('registerValue').textContent = 'Loading...';
-    document.getElementById('registerTimestamp').textContent = 'Loading...';
+    document.getElementById('registerNumber').textContent = 'Cargando...';
+    document.getElementById('registerValue').textContent = 'Cargando...';
+    document.getElementById('registerTimestamp').textContent = 'Cargando...';
     
     fetch(`${API_BASE_URL}/register/${registerNum}`)
         .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                throw new Error(`Error HTTP! Estado: ${response.status}`);
             }
             return response.json();
         })
@@ -177,10 +195,10 @@ function readRegister() {
             document.getElementById('registerValue').textContent += ` (${hexValue})`;
             
             const date = new Date(data.timestamp * 1000);
-            document.getElementById('registerTimestamp').textContent = date.toLocaleString();
+            document.getElementById('registerTimestamp').textContent = date.toLocaleString('es-ES');
         })
         .catch(error => {
-            console.error('Error fetching register:', error);
+            console.error('Error obteniendo registro:', error);
             document.getElementById('registerNumber').textContent = registerNum;
             document.getElementById('registerValue').textContent = 'Error: ' + error.message;
             document.getElementById('registerTimestamp').textContent = '--';
@@ -193,18 +211,18 @@ function readRegisterRange() {
     const count = document.getElementById('countRegisterInput').value;
     
     if (!startRegister || isNaN(parseInt(startRegister)) || !count || isNaN(parseInt(count))) {
-        alert('Please enter valid start register and count');
+        alert('Por favor ingrese un registro inicial y contador válidos');
         return;
     }
     
     // Clear previous results
     document.getElementById('registerTableBody').innerHTML = 
-        '<tr><td colspan="3">Loading...</td></tr>';
+        '<tr><td colspan="3">Cargando...</td></tr>';
     
     fetch(`${API_BASE_URL}/read_registers?start=${startRegister}&count=${count}`)
         .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                throw new Error(`Error HTTP! Estado: ${response.status}`);
             }
             return response.json();
         })
@@ -239,7 +257,7 @@ function readRegisterRange() {
             });
         })
         .catch(error => {
-            console.error('Error fetching registers:', error);
+            console.error('Error obteniendo registros:', error);
             document.getElementById('registerTableBody').innerHTML = 
                 `<tr><td colspan="3">Error: ${error.message}</td></tr>`;
         });
@@ -325,8 +343,8 @@ function buildModbusCommand() {
     const noteElement = document.createElement('div');
     noteElement.className = 'register-note';
     noteElement.innerHTML = `
-        <p><small>Register: ${originalAddress}, Modbus Address: ${modbusAddress} (${hexAddress})</small></p>
-        <p><small>High Byte: ${highByte}, Low Byte: ${lowByte}</small></p>
+        <p><small>Registro: ${originalAddress}, Dirección Modbus: ${modbusAddress} (${hexAddress})</small></p>
+        <p><small>Byte Alto: ${highByte}, Byte Bajo: ${lowByte}</small></p>
     `;
     
     const commandDisplay = document.getElementById('modbusCommand');
@@ -356,13 +374,13 @@ function sendModbusCommand() {
     const hexCommand = command.map(byte => byte.toString(16).padStart(2, '0')).join('');
     
     // Send to server
-    document.getElementById('modbusResponse').textContent = 'Sending command...';
-    document.getElementById('modbusParsedResponse').textContent = 'Waiting for response...';
+    document.getElementById('modbusResponse').textContent = 'Enviando comando...';
+    document.getElementById('modbusParsedResponse').textContent = 'Esperando respuesta...';
     
     fetch(`${API_BASE_URL}/modbus_command?command=${hexCommand}`)
         .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                throw new Error(`Error HTTP! Estado: ${response.status}`);
             }
             return response.json();
         })
@@ -376,9 +394,9 @@ function sendModbusCommand() {
             parseAndDisplayResponse(data.response);
         })
         .catch(error => {
-            console.error('Error sending Modbus command:', error);
+            console.error('Error enviando comando Modbus:', error);
             document.getElementById('modbusResponse').textContent = 'Error: ' + error.message;
-            document.getElementById('modbusParsedResponse').textContent = 'Failed to get response';
+            document.getElementById('modbusParsedResponse').textContent = 'No se pudo obtener respuesta';
         });
 }
 
@@ -386,7 +404,7 @@ function sendModbusCommand() {
 function parseAndDisplayResponse(response) {
     // Basic validation
     if (!response || response.length < 3) {
-        document.getElementById('modbusParsedResponse').textContent = 'Invalid or empty response';
+        document.getElementById('modbusParsedResponse').textContent = 'Respuesta inválida o vacía';
         return;
     }
     
@@ -400,8 +418,8 @@ function parseAndDisplayResponse(response) {
             const byteCount = response[2];
             const registerCount = byteCount / 2;
             
-            let html = `<p>Device: ${deviceAddress}, Function: ${functionCode}, Byte Count: ${byteCount}</p>`;
-            html += '<table><thead><tr><th>Register</th><th>Value (Dec)</th><th>Value (Hex)</th></tr></thead><tbody>';
+            let html = `<p>Dispositivo: ${deviceAddress}, Función: ${functionCode}, Conteo de Bytes: ${byteCount}</p>`;
+            html += '<table><thead><tr><th>Registro</th><th>Valor (Dec)</th><th>Valor (Hex)</th></tr></thead><tbody>';
             
             // Get the starting register from the command input
             const startRegister = parseInt(document.getElementById('modbusRegisterAddress').value);
@@ -427,23 +445,23 @@ function parseAndDisplayResponse(response) {
             const registerValue = (response[4] << 8) | response[5];
             
             document.getElementById('modbusParsedResponse').innerHTML = 
-                `<p>Device: ${deviceAddress}, Function: ${functionCode}</p>
-                <p>Register Address: ${registerAddress}, Value: ${registerValue} (0x${registerValue.toString(16).toUpperCase()})</p>`;
+                `<p>Dispositivo: ${deviceAddress}, Función: ${functionCode}</p>
+                <p>Dirección de Registro: ${registerAddress}, Valor: ${registerValue} (0x${registerValue.toString(16).toUpperCase()})</p>`;
         } else if (functionCode === 16) {
             // Write multiple registers response
             const registerAddress = (response[2] << 8) | response[3];
             const registerCount = (response[4] << 8) | response[5];
             
             document.getElementById('modbusParsedResponse').innerHTML = 
-                `<p>Device: ${deviceAddress}, Function: ${functionCode}</p>
-                <p>Starting Address: ${registerAddress}, Registers Written: ${registerCount}</p>`;
+                `<p>Dispositivo: ${deviceAddress}, Función: ${functionCode}</p>
+                <p>Dirección Inicial: ${registerAddress}, Registros Escritos: ${registerCount}</p>`;
         } else {
             // Error or unknown function code
             document.getElementById('modbusParsedResponse').textContent = 
-                `Unknown or error function code: ${functionCode}`;
+                `Código de función desconocido o error: ${functionCode}`;
         }
     } catch (e) {
         document.getElementById('modbusParsedResponse').textContent = 
-            `Error parsing response: ${e.message}`;
+            `Error analizando respuesta: ${e.message}`;
     }
 }

@@ -1,0 +1,386 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #1a1f3a;
+    color: #ffffff;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.dashboard {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background-color: #0f1427;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.logo h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.beta {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #ff4757;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: #8892b0;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+}
+
+.nav-item.active {
+    background-color: rgba(0, 228, 181, 0.1);
+    color: #00e4b5;
+    border-left: 3px solid #00e4b5;
+}
+
+.icon {
+    font-size: 20px;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+    background-color: #1a1f3a;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.date-display {
+    position: absolute;
+    right: 30px;
+    top: 30px;
+    font-size: 16px;
+    color: #8892b0;
+}
+
+.time-filters {
+    display: flex;
+    gap: 10px;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 5px;
+    border-radius: 8px;
+}
+
+.filter-btn {
+    padding: 8px 20px;
+    background: none;
+    border: none;
+    color: #8892b0;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.filter-btn.active {
+    background-color: #00e4b5;
+    color: #0f1427;
+    font-weight: 600;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.metric-card {
+    background-color: #242b4a;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.metric-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #8892b0;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+}
+
+/* Chart Containers */
+.chart-container {
+    position: relative;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chart-center-text {
+    position: absolute;
+    text-align: center;
+}
+
+.total-label {
+    font-size: 14px;
+    color: #8892b0;
+}
+
+.total-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.intensity-value {
+    font-size: 36px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.intensity-unit {
+    font-size: 16px;
+    color: #8892b0;
+}
+
+/* Legend */
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+/* Cost Change */
+.cost-change {
+    position: relative;
+}
+
+.change-indicator {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.arrow {
+    color: #ff4757;
+    font-size: 24px;
+}
+
+.percentage {
+    font-size: 32px;
+    font-weight: 700;
+    color: #ff4757;
+}
+
+.change-label {
+    font-size: 12px;
+    color: #8892b0;
+    margin-top: 5px;
+}
+
+/* Usage Chart */
+.usage-info {
+    height: 250px;
+}
+
+.usage-values {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.usage-values strong {
+    color: #00e4b5;
+}
+
+/* Appliances List */
+.appliances-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.appliance-item {
+    display: grid;
+    grid-template-columns: 150px 1fr 60px;
+    align-items: center;
+    gap: 10px;
+}
+
+.appliance-name {
+    font-size: 14px;
+    color: #e0e6ed;
+}
+
+.appliance-bar {
+    height: 8px;
+    background-color: #00e4b5;
+    border-radius: 4px;
+}
+
+.appliance-value {
+    font-size: 12px;
+    color: #8892b0;
+    text-align: right;
+}
+
+/* Carbon Footprint */
+.carbon-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.emission-data h4,
+.green-energy h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e0e6ed;
+    margin-bottom: 10px;
+}
+
+.emission-values {
+    display: flex;
+    justify-content: space-between;
+}
+
+.emission-values > div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.emission-values .label {
+    font-size: 12px;
+    color: #8892b0;
+}
+
+.emission-values .value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.green-bar {
+    width: 100%;
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.green-progress {
+    height: 100%;
+    background-color: #00e4b5;
+    transition: width 0.3s ease;
+}
+
+.goal-text {
+    display: block;
+    text-align: right;
+    font-size: 12px;
+    color: #8892b0;
+    margin-top: 5px;
+}
+
+/* Status Bar */
+.status-bar {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background-color: #242b4a;
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#connectionStatus {
+    font-size: 14px;
+    color: #00e4b5;
+}
+
+.refresh-btn {
+    padding: 8px 16px;
+    background-color: #00e4b5;
+    border: none;
+    border-radius: 6px;
+    color: #0f1427;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.refresh-btn:hover {
+    background-color: #00c9a7;
+    transform: translateY(-1px);
+}

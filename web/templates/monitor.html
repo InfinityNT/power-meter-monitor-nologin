@@ -1,213 +1,206 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Power Meter Monitor</title>
+    <meta charset="UTF-8">
+    <title>Monitor de Medidor de Energía</title>
     <link rel="stylesheet" href="monitor.css">
 </head>
 <body>
-    <h1>Power Meter Monitor</h1>
-    <p>This page connects to your power meter monitor API and displays real-time readings.</p>
+    <h1>Monitor de Medidor de Energía</h1>
+    <p>Esta página se conecta a tu API de monitor de medidor de energía y muestra lecturas en tiempo real.</p>
     
-    <button id="refreshBtn">Refresh Readings</button>
-    <div class="status" id="status">Not connected</div>
+    <button id="refreshBtn">Actualizar Lecturas</button>
+    <div class="status" id="status">No conectado</div>
     
     <div class="tabs">
-        <div class="tab active" data-tab="mainTab">Main Readings</div>
-        <div class="tab" data-tab="debugTab">Debug Info</div>
-        <div class="tab" data-tab="registerTab">Register Query</div>
-        <div class="tab" data-tab="rawDataTab">All Data</div>
+        <div class="tab active" data-tab="mainTab">Lecturas Principales</div>
+        <!-- <div class="tab" data-tab="debugTab">Información de Depuración</div> -->
+        <div class="tab" data-tab="registerTab">Consulta de Registros</div>
+        <!-- <div class="tab" data-tab="rawDataTab">Todos los Datos</div> -->
     </div>
     
     <div id="mainTab" class="tab-content active">
         <div class="readings">
-            <h2>Current Readings</h2>
+            <h2>Lecturas Actuales</h2>
             
             <div class="grid">
                 <div>
-                    <h3>Power Measurements</h3>
-                    <p>Active Power: <span class="meter-value" id="power_kw">--</span> kW</p>
-                    <p>Reactive Power: <span class="meter-value" id="reactive_power_kvar">--</span> kVAR</p>
-                    <p>Apparent Power: <span class="meter-value" id="apparent_power_kva">--</span> kVA</p>
-                    <p>Energy: <span class="meter-value" id="energy_kwh">--</span> kWh</p>
-                    <p>Power Factor: <span class="meter-value" id="power_factor">--</span></p>
+                    <h3>Mediciones de Potencia</h3>
+                    <p>Potencia Activa: <span class="meter-value" id="power_kw">--</span> kW</p>
+                    <p>Potencia Reactiva: <span class="meter-value" id="reactive_power_kvar">--</span> kVAR</p>
+                    <p>Potencia Aparente: <span class="meter-value" id="apparent_power_kva">--</span> kVA</p>
+                    <p>Energía: <span class="meter-value" id="energy_kwh">--</span> kWh</p>
+                    <p>Factor de Potencia: <span class="meter-value" id="power_factor">--</span></p>
                 </div>
                 
                 <div>
-                    <h3>Electrical Measurements</h3>
-                    <p>Current: <span class="meter-value" id="current_avg">--</span> A</p>
-                    <p>Voltage (L-L): <span class="meter-value" id="voltage_ll_avg">--</span> V</p>
-                    <p>Voltage (L-N): <span class="meter-value" id="voltage_ln_avg">--</span> V</p>
-                    <p>Frequency: <span class="meter-value" id="frequency">--</span> Hz</p>
+                    <h3>Mediciones Eléctricas</h3>
+                    <p>Corriente: <span class="meter-value" id="current_avg">--</span> A</p>
+                    <p>Voltaje (L-L): <span class="meter-value" id="voltage_ll_avg">--</span> V</p>
+                    <p>Voltaje (L-N): <span class="meter-value" id="voltage_ln_avg">--</span> V</p>
+                    <p>Frecuencia: <span class="meter-value" id="frequency">--</span> Hz</p>
                 </div>
             </div>
             
             <div class="phases">
                 <div class="phase">
-                    <h3>Phase 1</h3>
-                    <p>Power: <span class="meter-value" id="phase1_power">--</span> kW</p>
-                    <p>Current: <span class="meter-value" id="phase1_current">--</span> A</p>
-                    <p>Voltage: <span class="meter-value" id="phase1_voltage">--</span> V</p>
-                    <p>PF: <span class="meter-value" id="phase1_pf">--</span></p>
+                    <h3>Fase 1</h3>
+                    <p>Potencia: <span class="meter-value" id="phase1_power">--</span> kW</p>
+                    <p>Corriente: <span class="meter-value" id="phase1_current">--</span> A</p>
+                    <p>Voltaje: <span class="meter-value" id="phase1_voltage">--</span> V</p>
+                    <p>FP: <span class="meter-value" id="phase1_pf">--</span></p>
                 </div>
                 
                 <div class="phase">
-                    <h3>Phase 2</h3>
-                    <p>Power: <span class="meter-value" id="phase2_power">--</span> kW</p>
-                    <p>Current: <span class="meter-value" id="phase2_current">--</span> A</p>
-                    <p>Voltage: <span class="meter-value" id="phase2_voltage">--</span> V</p>
-                    <p>PF: <span class="meter-value" id="phase2_pf">--</span></p>
+                    <h3>Fase 2</h3>
+                    <p>Potencia: <span class="meter-value" id="phase2_power">--</span> kW</p>
+                    <p>Corriente: <span class="meter-value" id="phase2_current">--</span> A</p>
+                    <p>Voltaje: <span class="meter-value" id="phase2_voltage">--</span> V</p>
+                    <p>FP: <span class="meter-value" id="phase2_pf">--</span></p>
                 </div>
                 
                 <div class="phase">
-                    <h3>Phase 3</h3>
-                    <p>Power: <span class="meter-value" id="phase3_power">--</span> kW</p>
-                    <p>Current: <span class="meter-value" id="phase3_current">--</span> A</p>
-                    <p>Voltage: <span class="meter-value" id="phase3_voltage">--</span> V</p>
-                    <p>PF: <span class="meter-value" id="phase3_pf">--</span></p>
+                    <h3>Fase 3</h3>
+                    <p>Potencia: <span class="meter-value" id="phase3_power">--</span> kW</p>
+                    <p>Corriente: <span class="meter-value" id="phase3_current">--</span> A</p>
+                    <p>Voltaje: <span class="meter-value" id="phase3_voltage">--</span> V</p>
+                    <p>FP: <span class="meter-value" id="phase3_pf">--</span></p>
                 </div>
             </div>
             
-            <p>Last Updated: <span id="timestamp">--</span></p>
+            <p>Última Actualización: <span id="timestamp">--</span></p>
         </div>
     </div>
     
     <div id="debugTab" class="tab-content">
         <div class="debugging">
-            <h3>Scaling Information</h3>
-            <p>Data Scalar: <span id="data_scalar">--</span></p>
-            <p>Power Multiplier: <span id="power_multiplier">--</span></p>
-            <p>Voltage Multiplier: <span id="voltage_multiplier">--</span></p>
-            <p>Current Multiplier: <span id="current_multiplier">--</span></p>
-            <p>PF Multiplier: <span id="pf_multiplier">--</span></p>
-            <p>Frequency Multiplier: <span id="freq_multiplier">--</span></p>
+            <h3>Información de Escalamiento</h3>
+            <p>Escalar de Datos: <span id="data_scalar">--</span></p>
+            <p>Multiplicador de Potencia: <span id="power_multiplier">--</span></p>
+            <p>Multiplicador de Voltaje: <span id="voltage_multiplier">--</span></p>
+            <p>Multiplicador de Corriente: <span id="current_multiplier">--</span></p>
+            <p>Multiplicador de FP: <span id="pf_multiplier">--</span></p>
+            <p>Multiplicador de Frecuencia: <span id="freq_multiplier">--</span></p>
             
-            <h3>Raw Register Values</h3>
-            <p>Raw frequency value: <span id="raw_frequency">--</span></p>
-            <p>Raw voltage (L-L): <span id="raw_voltage_ll">--</span></p>
-            <p>Raw voltage (L-N): <span id="raw_voltage_ln">--</span></p>
-            <p>Raw current: <span id="raw_current">--</span></p>
-            <p>Raw power: <span id="raw_power">--</span></p>
-            <p>Raw power factor: <span id="raw_pf">--</span></p>
+            <h3>Valores de Registro Sin Procesar</h3>
+            <p>Valor de frecuencia sin procesar: <span id="raw_frequency">--</span></p>
+            <p>Voltaje sin procesar (L-L): <span id="raw_voltage_ll">--</span></p>
+            <p>Voltaje sin procesar (L-N): <span id="raw_voltage_ln">--</span></p>
+            <p>Corriente sin procesar: <span id="raw_current">--</span></p>
+            <p>Potencia sin procesar: <span id="raw_power">--</span></p>
+            <p>Factor de potencia sin procesar: <span id="raw_pf">--</span></p>
         </div>
     </div>
     
     <div id="rawDataTab" class="tab-content">
         <div class="all-data">
-            <h3>Complete Data from Power Meter</h3>
-            <p>This shows all data retrieved from the power meter API.</p>
-            <pre id="rawDataContent">Loading...</pre>
+            <h3>Datos Completos del Medidor de Energía</h3>
+            <p>Esto muestra todos los datos recuperados de la API del medidor de energía.</p>
+            <pre id="rawDataContent">Cargando...</pre>
         </div>
     </div>
 
     <div id="registerTab" class="tab-content">
         <div class="register-query">
-            <h3>Query Specific Register</h3>
-            <p>Enter a register number to read its value:</p>
+            <h3>Consultar Registro Específico</h3>
+            <p>Ingrese un número de registro para leer su valor:</p>
             
             <div class="register-input">
                 <input type="number" id="registerInput" placeholder="44602" min="40001" max="49999" value="44602">
-                <button id="readRegisterBtn">Read Register</button>
+                <button id="readRegisterBtn">Leer Registro</button>
             </div>
             
             <div class="register-result" id="registerResult">
-                <p>Register: <span id="registerNumber">--</span></p>
-                <p>Value: <span id="registerValue">--</span></p>
-                <p>Last Read: <span id="registerTimestamp">--</span></p>
+                <p>Registro: <span id="registerNumber">--</span></p>
+                <p>Valor: <span id="registerValue">--</span></p>
+                <p>Última Lectura: <span id="registerTimestamp">--</span></p>
             </div>
             
-            <h3>Read Register Range</h3>
-            <p>Read a range of registers:</p>
+            <h3>Leer Rango de Registros</h3>
+            <p>Leer un rango de registros:</p>
             
             <div class="register-range-input">
                 <label>
-                    Start Register:
+                    Registro Inicial:
                     <input type="number" id="startRegisterInput" placeholder="44001" min="40001" max="49999" value="44001">
                 </label>
                 <label>
-                    Number of Registers:
+                    Número de Registros:
                     <input type="number" id="countRegisterInput" placeholder="10" min="1" max="125" value="10">
                 </label>
-                <button id="readRegisterRangeBtn">Read Registers</button>
+                <button id="readRegisterRangeBtn">Leer Registros</button>
             </div>
             
             <div class="register-range-result">
                 <table id="registerTable">
                     <thead>
                         <tr>
-                            <th>Register</th>
-                            <th>Value</th>
-                            <th>Hex</th>
+                            <th>Registro</th>
+                            <th>Valor</th>
+                            <th>Hexadecimal</th>
                         </tr>
                     </thead>
                     <tbody id="registerTableBody">
-                        <!-- Register values will be inserted here -->
+                        <!-- Los valores de registro se insertarán aquí -->
                     </tbody>
                 </table>
             </div>
 
-            <h3>Raw Modbus Command</h3>
-            <p>Send a raw Modbus command directly to the meter:</p>
+            <h3>Comando Modbus Sin Procesar</h3>
+            <p>Enviar un comando Modbus sin procesar directamente al medidor:</p>
 
             <div class="modbus-input">
                 <div class="modbus-field-container">
                     <label>
-                        Device Address:
+                        Dirección del Dispositivo:
                         <input type="number" id="modbusAddress" min="1" max="255" value="1">
                     </label>
                     
                     <label>
-                        Function Code:
+                        Código de Función:
                         <select id="modbusFunctionCode">
-                            <option value="3">03 - Read Holding Registers</option>
-                            <option value="4">04 - Read Input Registers</option>
-                            <option value="6">06 - Write Single Register</option>
-                            <option value="16">16 - Write Multiple Registers</option>
+                            <option value="3">03 - Leer Registros de Retención</option>
+                            <option value="4">04 - Leer Registros de Entrada</option>
+                            <option value="6">06 - Escribir Registro Único</option>
+                            <option value="16">16 - Escribir Múltiples Registros</option>
                         </select>
                     </label>
                 </div>
                 
                 <div class="modbus-field-container">
                     <label>
-                        Register Address:
+                        Dirección de Registro:
                         <input type="number" id="modbusRegisterAddress" min="0" max="65535" value="0">
                     </label>
                     
                     <label>
-                        Register Count/Value:
+                        Conteo/Valor de Registro:
                         <input type="number" id="modbusRegisterCount" min="1" max="125" value="1">
                     </label>
                 </div>
                 
                 <div class="modbus-actions">
-                    <button id="buildModbusCommandBtn">Build Command</button>
-                    <button id="sendModbusCommandBtn">Send Command</button>
+                    <button id="buildModbusCommandBtn">Construir Comando</button>
+                    <button id="sendModbusCommandBtn">Enviar Comando</button>
                 </div>
             </div>
 
             <div class="modbus-results">
                 <div class="command-display">
-                    <h4>Command Bytes:</h4>
+                    <h4>Bytes del Comando:</h4>
                     <div id="modbusCommand" class="code-display">--</div>
                 </div>
                 
                 <div class="response-display">
-                    <h4>Response:</h4>
+                    <h4>Respuesta:</h4>
                     <div id="modbusResponse" class="code-display">--</div>
                 </div>
                 
                 <div class="parsed-response">
-                    <h4>Parsed Response:</h4>
+                    <h4>Respuesta Analizada:</h4>
                     <div id="modbusParsedResponse">--</div>
                 </div>
             </div>
-        </div>
-    </div>
-    
-    <div id="rawDataTab" class="tab-content">
-        <div class="all-data">
-            <h3>Complete Data from Power Meter</h3>
-            <p>This shows all data retrieved from the power meter API.</p>
-            <pre id="rawDataContent">Loading...</pre>
         </div>
     </div>
     
