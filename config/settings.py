@@ -29,7 +29,7 @@ CONFIG = {
     'API_BASE_URL': 'http://10.10.133.15:8080/api',  # Base URL for API endpoints
     
     # Dashboard settings
-    'DASHBOARD_STYLE': 'modern',  # Options: 'classic' or 'modern'
+    'DASHBOARD_STYLE': 'classic',  # Options: 'classic' or 'modern'
     
     # Database settings
     'USE_DATABASE': True,      # Enable/disable database storage

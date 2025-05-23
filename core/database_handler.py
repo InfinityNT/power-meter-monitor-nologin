@@ -133,7 +133,7 @@ class DatabaseHandler:
             # Insert query
             insert_sql = f"""
             INSERT INTO {self.table_name} (
-                timestamp, power_kw, reactive_power_kvar, apparent_power_kva,
+                [timestamp], power_kw, reactive_power_kvar, apparent_power_kva,
                 energy_kwh, power_factor, current_avg, voltage_ll_avg, voltage_ln_avg,
                 frequency, phase1_power_kw, phase1_current, phase1_voltage_ln, phase1_pf,
                 phase2_power_kw, phase2_current, phase2_voltage_ln, phase2_pf,

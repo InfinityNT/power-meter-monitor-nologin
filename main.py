@@ -48,27 +48,8 @@ def main():
     
     logger.info("Power meter connection test successful!")
     
-    # Create custom data manager that uses the detailed data function if configured
-    class CustomPowerMeterDataManager(PowerMeterDataManager):
-        def _read_meter_loop(self):
-            """Continuously read from the meter"""
-            while self.running:
-                try:
-                    # Use detailed data if configured, otherwise use regular data
-                    if CONFIG.get('DETAILED_DATA', False):
-                        data = self.reader.read_detailed_data()
-                    else:
-                        data = self.reader.read_data()
-                        
-                    if data is not None:
-                        self.meter_data = data
-                        logger.info(f"Updated readings: Power={data.get('system', {}).get('power_kw', data.get('power_kw', 'N/A'))}kW")
-                except Exception as e:
-                    logger.error(f"Error in meter reading loop: {str(e)}")
-                time.sleep(self.poll_interval)
-    
     # Create data manager
-    data_manager = CustomPowerMeterDataManager(reader, CONFIG['POLL_INTERVAL'])
+    data_manager = PowerMeterDataManager(reader, CONFIG['POLL_INTERVAL'])
     
     # Create HTTP server
     http_server = PowerMeterHTTPServer(CONFIG['HTTP_PORT'], data_manager)
