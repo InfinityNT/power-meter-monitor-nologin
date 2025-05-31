@@ -1,11 +1,8 @@
 // Global API URL variable
-let API_BASE_URL = 'http://10.10.133.15:8080/api';
+let API_BASE_URL = window.APP_CONFIG?.API_BASE_URL || '/api';
 
 // Initialize the page
-document.addEventListener('DOMContentLoaded', async function() {
-    // Load configuration first
-    await loadConfiguration();
-    
+document.addEventListener('DOMContentLoaded', function() {
     // Set up tab navigation
     setupTabs();
     
@@ -27,18 +24,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('sendModbusCommandBtn').addEventListener('click', sendModbusCommand);
 });
 
-// Load configuration from server
-async function loadConfiguration() {
-    try {
-        const response = await fetch('/api/config');
-        if (response.ok) {
-            const config = await response.json();
-            API_BASE_URL = config.API_BASE_URL || API_BASE_URL;
-        }
-    } catch (error) {
-        console.error('Error cargando configuración:', error);
-    }
-}
+
 
 // Set up tab navigation
 function setupTabs() {

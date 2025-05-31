@@ -1,18 +1,37 @@
 """
-Test script to verify MS Access database connection
+Power Meter Monitor - Database Connection Test
+
+This module provides comprehensive testing for MS Access database connectivity.
+It verifies database configuration, driver availability, and connection establishment.
+
+Functions:
+    run_database_connection_test: Main function to test database connectivity
 """
+
 import os
 import sys
 import pyodbc
 
 # Add project root to path
-project_root = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 
 from config.settings import CONFIG
 
-def test_database_connection():
-    """Test the MS Access database connection"""
+def run_database_connection_test():
+    """
+    Test the MS Access database connection and configuration
+    
+    This function performs comprehensive testing of the database setup including:
+    - Database path verification
+    - ODBC driver availability check
+    - Connection establishment test
+    - Table existence verification
+    - Record count reporting
+    
+    Returns:
+        bool: True if all tests pass, False if any test fails
+    """
     print("Testing MS Access Database Connection")
     print("=" * 50)
     
@@ -84,6 +103,9 @@ def test_database_connection():
         print("3. Try installing the opposite bit version of Access Database Engine")
         return False
 
+# Backward compatibility alias
+test_database_connection = run_database_connection_test
+
 if __name__ == "__main__":
-    success = test_database_connection()
+    success = run_database_connection_test()
     sys.exit(0 if success else 1)

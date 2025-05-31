@@ -26,15 +26,20 @@ CONFIG = {
     # Server settings
     'HTTP_PORT': 8080,         # Port for the HTTP API server
     'WEB_PORT': 8000,          # Port for the web interface
-    'API_BASE_URL': 'http://10.10.133.15:8080/api',  # Base URL for API endpoints
+    'API_BASE_URL': 'http://localhost:8080/api',  # Base URL for API endpoints
     
     # Dashboard settings
     'DASHBOARD_STYLE': 'classic',  # Options: 'classic' or 'modern'
     
     # Database settings
-    'USE_DATABASE': True,      # Enable/disable database storage
+    'USE_DATABASE': False,      # Enable/disable database storage
     'DATABASE_PATH': os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'power_meter.accdb'),
     'DATABASE_TABLE': 'meter_readings',
+    
+    # Test database settings (separate from production)
+    'TEST_DATABASE_PATH': os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'power_meter_test.accdb'),
+    'TEST_DATABASE_TABLE': 'test_meter_readings',
+    'USE_TEST_DATABASE': False,  # Enable/disable test database storage
     
     # Operation settings
     'POLL_INTERVAL': 5,        # Seconds between meter readings

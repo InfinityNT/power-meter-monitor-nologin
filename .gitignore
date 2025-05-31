@@ -241,3 +241,6 @@ build/
 dist/
 *.exe
 *.msi
+
+# Documentation
+documentation/
